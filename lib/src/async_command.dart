@@ -1,5 +1,5 @@
-import 'package:commands/src/command.dart';
 import 'package:flutter/foundation.dart';
+import 'package:simple_command/src/command.dart';
 
 /// A [Command] that executes asynchronously.
 abstract class AsyncCommand extends Command {
@@ -11,10 +11,12 @@ abstract class AsyncCommand extends Command {
   Future<void> call([Object? parameter]);
 }
 
+/// A [Command] that executes asynchronously with a paramter [T].
 abstract class AsyncCommandWithParam<T> extends AsyncCommand {
   /// Executes this command.
   @override
   Future<void> call([covariant T? parameter]);
 }
 
+/// A [Command] that executes asynchronously without any parameter.
 abstract class AsyncCommandWithoutParam extends AsyncCommand {}

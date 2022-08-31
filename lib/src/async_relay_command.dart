@@ -1,21 +1,21 @@
-import 'package:commands/src/async_command.dart';
-import 'package:commands/src/command.dart';
-import 'package:commands/src/utils.dart';
+import 'package:simple_command/src/async_command.dart';
+import 'package:simple_command/src/command.dart';
+import 'package:simple_command/src/utils.dart';
 
 /// A [Command] that executes asynchronously.
-abstract class AsyncRelayCommand extends AsyncCommand {
+abstract class AsyncRelayCommand<T> extends AsyncCommand {
   /// Initializes a new instance of [AsyncRelayCommand] that does not need any parameter when executing.
-  static AsyncRelayCommand withoutParam(Future<void> Function() execute) {
+  static AsyncRelayCommand<void> withoutParam(Future<void> Function() execute) {
     return _AsyncRelayCommandImplWithoutParams(execute);
   }
 
-  /// Initializes a new instance of [AsyncRelayCommand] that does not need any parameter when executing.
-  static AsyncRelayCommand withParam<T>(Future<void> Function(T) execute) {
+  /// Initializes a new instance of [AsyncRelayCommand] that needs a parameter [T] when executing.
+  static AsyncRelayCommand<T> withParam<T>(Future<void> Function(T) execute) {
     return _AsyncRelayCommandImplWithParams<T>(execute);
   }
 }
 
-class _AsyncRelayCommandImplWithoutParams extends AsyncRelayCommand implements AsyncCommandWithoutParam {
+class _AsyncRelayCommandImplWithoutParams extends AsyncRelayCommand<void> implements AsyncCommandWithoutParam {
   _AsyncRelayCommandImplWithoutParams(this._execute);
 
   final Future<void> Function() _execute;
@@ -33,7 +33,7 @@ class _AsyncRelayCommandImplWithoutParams extends AsyncRelayCommand implements A
   }
 }
 
-class _AsyncRelayCommandImplWithParams<T> extends AsyncRelayCommand implements CommandWithParam<T> {
+class _AsyncRelayCommandImplWithParams<T> extends AsyncRelayCommand<T> implements CommandWithParam<T> {
   _AsyncRelayCommandImplWithParams(this._execute);
 
   final Future<void> Function(T) _execute;

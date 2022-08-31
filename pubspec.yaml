@@ -1,11 +1,11 @@
-name: commands
+name: simple_command
 description: A simple Flutter package for wrapping method executions in a Command object
 version: 1.0.0
 homepage: https://github.com/dustincatap/commands
 repository: https://github.com/dustincatap/commands
 
 environment:
-  sdk: ">=2.17.6 <3.0.0"
+  sdk: ">=2.17.0 <3.0.0"
   flutter: ">=2.5.0"
 
 dependencies:

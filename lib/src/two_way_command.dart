@@ -1,15 +1,19 @@
-import 'package:commands/src/command.dart';
-import 'package:commands/src/utils.dart';
+import 'package:simple_command/src/command.dart';
+import 'package:simple_command/src/utils.dart';
 
 /// A [Command] that executes synchronously and returns a value [TOut].
-abstract class TwoWayCommand<TOut> extends Command {
+abstract class TwoWayCommand<TIn, TOut> extends Command {
   /// Initializes a new instance of [TwoWayCommand] that does not need any parameter when executing.
-  static TwoWayCommand<TOut> withoutParam<TOut>(TOut Function() execute) {
-    return _TwoWayCommandImplWithoutParams<TOut>(execute);
+  ///
+  /// Returns a value [TOut].
+  static TwoWayCommand<void, TOut> withoutParam<TOut>(TOut Function() execute) {
+    return _TwoWayCommandImplWithoutParams<void, TOut>(execute);
   }
 
-  /// Initializes a new instance of [TwoWayCommand] that does not need any parameter when executing.
-  static TwoWayCommand<TOut> withParam<TIn, TOut>(TOut Function(TIn) execute) {
+  /// Initializes a new instance of [TwoWayCommand] that needs a parameter [TIn] when executing.
+  ///
+  /// Returns a value [TOut].
+  static TwoWayCommand<TIn, TOut> withParam<TIn, TOut>(TOut Function(TIn) execute) {
     return _TwoWayCommandImplWithParams<TIn, TOut>(execute);
   }
 
@@ -17,7 +21,7 @@ abstract class TwoWayCommand<TOut> extends Command {
   TOut? call([Object? parameter]);
 }
 
-class _TwoWayCommandImplWithoutParams<TOut> extends TwoWayCommand<TOut> implements CommandWithoutParam {
+class _TwoWayCommandImplWithoutParams<TIn, TOut> extends TwoWayCommand<TIn, TOut> implements CommandWithoutParam {
   _TwoWayCommandImplWithoutParams(this._execute);
 
   final TOut Function() _execute;
@@ -32,7 +36,7 @@ class _TwoWayCommandImplWithoutParams<TOut> extends TwoWayCommand<TOut> implemen
   }
 }
 
-class _TwoWayCommandImplWithParams<TIn, TOut> extends TwoWayCommand<TOut> implements CommandWithParam<TIn> {
+class _TwoWayCommandImplWithParams<TIn, TOut> extends TwoWayCommand<TIn, TOut> implements CommandWithParam<TIn> {
   _TwoWayCommandImplWithParams(this._execute);
 
   final TOut Function(TIn) _execute;

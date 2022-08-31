@@ -1,5 +1,5 @@
-import 'package:commands/commands.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_command/commands.dart';
 
 void main() {
   runApp(const MyApp());
@@ -116,11 +116,9 @@ class MyHomePage extends StatelessWidget {
 class MyHomeViewModel {
   final ValueNotifier<int> counter = ValueNotifier(0);
 
-  late final RelayCommand incrementCounterCommand =
-      RelayCommand.withoutParam(_incrementCounter);
+  late final RelayCommand incrementCounterCommand = RelayCommand.withoutParam(_incrementCounter);
 
-  late final RelayCommand decrementCounterCommand =
-      RelayCommand.withoutParam(_decrementCounter);
+  late final RelayCommand decrementCounterCommand = RelayCommand.withoutParam(_decrementCounter);
 
   void _incrementCounter() {
     counter.value++;

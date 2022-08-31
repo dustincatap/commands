@@ -1,6 +1,6 @@
-import 'package:commands/commands.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:simple_command/commands.dart';
 
 import 'callable.dart';
 
@@ -57,7 +57,7 @@ void main() {
       mockCallable = MockAsyncCallableWithParam();
     });
 
-    AsyncRelayCommand createUnit() => AsyncRelayCommand.withParam(mockCallable);
+    AsyncRelayCommand<Object> createUnit() => AsyncRelayCommand.withParam(mockCallable);
 
     test('should execute when called', () async {
       const Object param = Object();

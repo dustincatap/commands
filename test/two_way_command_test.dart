@@ -1,6 +1,6 @@
-import 'package:commands/commands.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:simple_command/commands.dart';
 
 import 'callable.dart';
 
@@ -12,7 +12,7 @@ void main() {
       mockCallable = MockCallableWithResult();
     });
 
-    TwoWayCommand<Object> createUnit() => TwoWayCommand.withoutParam(mockCallable);
+    TwoWayCommand<void, Object> createUnit() => TwoWayCommand.withoutParam(mockCallable);
 
     test('should execute when called', () async {
       when(mockCallable.call()).thenReturn(anything);
@@ -90,7 +90,7 @@ void main() {
       mockCallable = MockCallableWithParamAndResult();
     });
 
-    TwoWayCommand<Object> createUnit() => TwoWayCommand.withParam(mockCallable);
+    TwoWayCommand<void, Object> createUnit() => TwoWayCommand.withParam(mockCallable);
 
     test('should execute when called', () async {
       const Object param = Object();

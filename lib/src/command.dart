@@ -1,9 +1,9 @@
-import 'package:commands/src/async_command.dart';
-import 'package:commands/src/async_relay_command.dart';
-import 'package:commands/src/async_two_way_command.dart';
-import 'package:commands/src/relay_command.dart';
-import 'package:commands/src/two_way_command.dart';
 import 'package:flutter/foundation.dart';
+import 'package:simple_command/src/async_command.dart';
+import 'package:simple_command/src/async_relay_command.dart';
+import 'package:simple_command/src/async_two_way_command.dart';
+import 'package:simple_command/src/relay_command.dart';
+import 'package:simple_command/src/two_way_command.dart';
 
 /// Base class of all command objects.
 ///

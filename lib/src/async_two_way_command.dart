@@ -1,16 +1,20 @@
-import 'package:commands/src/async_command.dart';
-import 'package:commands/src/command.dart';
-import 'package:commands/src/utils.dart';
+import 'package:simple_command/src/async_command.dart';
+import 'package:simple_command/src/command.dart';
+import 'package:simple_command/src/utils.dart';
 
 /// A [Command] that executes asynchronously and returns a value [TOut].
-abstract class AsyncTwoWayCommand<TOut> extends AsyncCommand {
+abstract class AsyncTwoWayCommand<TIn, TOut> extends AsyncCommand {
   /// Initializes a new instance of [AsyncTwoWayCommand] that does not need any parameter when executing.
-  static AsyncTwoWayCommand<TOut> withoutParam<TOut>(Future<TOut> Function() execute) {
+  ///
+  /// Returns a value [TOut].
+  static AsyncTwoWayCommand<void, TOut> withoutParam<TOut>(Future<TOut> Function() execute) {
     return _AsyncTwoWayCommandImplWithoutParams<TOut>(execute);
   }
 
-  /// Initializes a new instance of [AsyncTwoWayCommand] that does not need any parameter when executing.
-  static AsyncTwoWayCommand<TOut> withParam<TIn, TOut>(Future<TOut> Function(TIn) execute) {
+  /// Initializes a new instance of [AsyncTwoWayCommand] that needs a parameter [TIn] when executing.
+  ///
+  /// Returns a value [TOut].
+  static AsyncTwoWayCommand<TIn, TOut> withParam<TIn, TOut>(Future<TOut> Function(TIn) execute) {
     return _AsyncTwoWayCommandImplWithParams<TIn, TOut>(execute);
   }
 
@@ -18,7 +22,8 @@ abstract class AsyncTwoWayCommand<TOut> extends AsyncCommand {
   Future<TOut?> call([Object? parameter]);
 }
 
-class _AsyncTwoWayCommandImplWithoutParams<TOut> extends AsyncTwoWayCommand<TOut> implements AsyncCommandWithoutParam {
+class _AsyncTwoWayCommandImplWithoutParams<TOut> extends AsyncTwoWayCommand<void, TOut>
+    implements AsyncCommandWithoutParam {
   _AsyncTwoWayCommandImplWithoutParams(this._execute);
 
   final Future<TOut> Function() _execute;
@@ -39,7 +44,8 @@ class _AsyncTwoWayCommandImplWithoutParams<TOut> extends AsyncTwoWayCommand<TOut
   }
 }
 
-class _AsyncTwoWayCommandImplWithParams<TIn, TOut> extends AsyncTwoWayCommand<TOut> implements CommandWithParam<TIn> {
+class _AsyncTwoWayCommandImplWithParams<TIn, TOut> extends AsyncTwoWayCommand<TIn, TOut>
+    implements CommandWithParam<TIn> {
   _AsyncTwoWayCommandImplWithParams(this._execute);
 
   final Future<TOut> Function(TIn) _execute;
