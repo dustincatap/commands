@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:simple_command/src/command.dart';
 import 'package:simple_command/src/utils.dart';
 
@@ -18,41 +19,43 @@ abstract class TwoWayCommand<TIn, TOut> extends Command {
   }
 
   @override
-  TOut? call([Object? parameter]);
-}
-
-class _TwoWayCommandImplWithoutParams<TIn, TOut> extends TwoWayCommand<TIn, TOut> implements CommandWithoutParam {
-  _TwoWayCommandImplWithoutParams(this._execute);
-
-  final TOut Function() _execute;
-
-  @override
-  TOut? call([Object? parameter]) {
+  TOut? call([covariant TIn? parameter]) {
     if (canExecute.value) {
-      return _execute();
+      return execute(parameter);
     }
 
     return null;
   }
+
+  @protected
+  @override
+  TOut? execute([TIn? parameter]);
 }
 
-class _TwoWayCommandImplWithParams<TIn, TOut> extends TwoWayCommand<TIn, TOut> implements CommandWithParam<TIn> {
+class _TwoWayCommandImplWithoutParams<TIn, TOut> extends TwoWayCommand<TIn, TOut> {
+  _TwoWayCommandImplWithoutParams(this._execute);
+
+  final TOut Function() _execute;
+
+  @protected
+  @override
+  TOut? execute([TIn? parameter]) => _execute();
+}
+
+class _TwoWayCommandImplWithParams<TIn, TOut> extends TwoWayCommand<TIn, TOut> {
   _TwoWayCommandImplWithParams(this._execute);
 
   final TOut Function(TIn) _execute;
 
+  @protected
   @override
-  TOut? call([TIn? parameter]) {
-    if (canExecute.value) {
-      if (parameter != null) {
-        return _execute(parameter);
-      } else if (_execute is TOut Function(TIn?)) {
-        return (_execute as TOut Function(TIn?)).call(null);
-      } else {
-        throw nullParamInNonNullableError<TIn>();
-      }
+  TOut? execute([TIn? parameter]) {
+    if (parameter != null) {
+      return _execute(parameter);
+    } else if (_execute is TOut Function(TIn?)) {
+      return (_execute as TOut Function(TIn?)).call(null);
+    } else {
+      throw nullParamInNonNullableError<TIn>();
     }
-
-    return null;
   }
 }

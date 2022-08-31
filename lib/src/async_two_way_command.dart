@@ -1,9 +1,10 @@
-import 'package:simple_command/src/async_command.dart';
+import 'package:meta/meta.dart';
+import 'package:simple_command/src/async_relay_command.dart';
 import 'package:simple_command/src/command.dart';
 import 'package:simple_command/src/utils.dart';
 
 /// A [Command] that executes asynchronously and returns a value [TOut].
-abstract class AsyncTwoWayCommand<TIn, TOut> extends AsyncCommand {
+abstract class AsyncTwoWayCommand<TIn, TOut> extends AsyncRelayCommand<TIn> {
   /// Initializes a new instance of [AsyncTwoWayCommand] that does not need any parameter when executing.
   ///
   /// Returns a value [TOut].
@@ -19,17 +20,27 @@ abstract class AsyncTwoWayCommand<TIn, TOut> extends AsyncCommand {
   }
 
   @override
-  Future<TOut?> call([Object? parameter]);
+  Future<TOut?> call([covariant TIn? parameter]) async {
+    if (canExecute.value) {
+      return execute(parameter);
+    }
+
+    return null;
+  }
+
+  @protected
+  @override
+  Future<TOut?> execute([covariant TIn? parameter]);
 }
 
-class _AsyncTwoWayCommandImplWithoutParams<TOut> extends AsyncTwoWayCommand<void, TOut>
-    implements AsyncCommandWithoutParam {
+class _AsyncTwoWayCommandImplWithoutParams<TOut> extends AsyncTwoWayCommand<void, TOut> {
   _AsyncTwoWayCommandImplWithoutParams(this._execute);
 
   final Future<TOut> Function() _execute;
 
+  @protected
   @override
-  Future<TOut?> call([Object? parameter]) async {
+  Future<TOut?> execute([Object? parameter]) async {
     if (canExecute.value) {
       try {
         isExecuting.value = true;
@@ -44,30 +55,26 @@ class _AsyncTwoWayCommandImplWithoutParams<TOut> extends AsyncTwoWayCommand<void
   }
 }
 
-class _AsyncTwoWayCommandImplWithParams<TIn, TOut> extends AsyncTwoWayCommand<TIn, TOut>
-    implements CommandWithParam<TIn> {
+class _AsyncTwoWayCommandImplWithParams<TIn, TOut> extends AsyncTwoWayCommand<TIn, TOut> {
   _AsyncTwoWayCommandImplWithParams(this._execute);
 
   final Future<TOut> Function(TIn) _execute;
 
+  @protected
   @override
-  Future<TOut?> call([TIn? parameter]) async {
-    if (canExecute.value) {
-      try {
-        isExecuting.value = true;
+  Future<TOut?> execute([TIn? parameter]) async {
+    try {
+      isExecuting.value = true;
 
-        if (parameter != null) {
-          return await _execute(parameter);
-        } else if (_execute is Future<TOut> Function(TIn?)) {
-          return await (_execute as Future<TOut> Function(TIn?)).call(null);
-        } else {
-          throw nullParamInNonNullableError<TIn>();
-        }
-      } finally {
-        isExecuting.value = false;
+      if (parameter != null) {
+        return await _execute(parameter);
+      } else if (_execute is Future<TOut> Function(TIn?)) {
+        return await (_execute as Future<TOut> Function(TIn?)).call(null);
+      } else {
+        throw nullParamInNonNullableError<TIn>();
       }
+    } finally {
+      isExecuting.value = false;
     }
-
-    return null;
   }
 }

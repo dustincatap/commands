@@ -1,3 +1,4 @@
+import 'package:meta/meta.dart';
 import 'package:simple_command/src/command.dart';
 import 'package:simple_command/src/utils.dart';
 
@@ -14,34 +15,30 @@ abstract class RelayCommand<T> extends Command {
   }
 }
 
-class _RelayCommandImplWithoutParams extends RelayCommand<void> implements CommandWithoutParam {
+class _RelayCommandImplWithoutParams extends Command implements RelayCommand<void> {
   _RelayCommandImplWithoutParams(this._execute);
 
   final void Function() _execute;
 
+  @protected
   @override
-  void call([Object? parameter]) {
-    if (canExecute.value) {
-      _execute();
-    }
-  }
+  void execute() => _execute();
 }
 
-class _RelayCommandImplWithParams<T> extends RelayCommand<T> implements CommandWithParam<T> {
+class _RelayCommandImplWithParams<T> extends CommandWithParam<T> implements RelayCommand<T> {
   _RelayCommandImplWithParams(this._execute);
 
   final void Function(T) _execute;
 
+  @protected
   @override
-  void call([T? parameter]) {
-    if (canExecute.value) {
-      if (parameter != null) {
-        _execute(parameter);
-      } else if (_execute is void Function(T?)) {
-        (_execute as void Function(T?)).call(null);
-      } else {
-        throw nullParamInNonNullableError<T>();
-      }
+  void execute([T? parameter]) {
+    if (parameter != null) {
+      _execute(parameter);
+    } else if (_execute is void Function(T?)) {
+      (_execute as void Function(T?)).call(null);
+    } else {
+      throw nullParamInNonNullableError<T>();
     }
   }
 }

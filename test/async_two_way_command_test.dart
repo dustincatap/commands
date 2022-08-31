@@ -90,7 +90,7 @@ void main() {
       mockCallable = MockAsyncCallableWithParamAndResult();
     });
 
-    AsyncTwoWayCommand<void, Object> createUnit() => AsyncTwoWayCommand.withParam(mockCallable);
+    AsyncTwoWayCommand<Object, Object> createUnit() => AsyncTwoWayCommand.withParam(mockCallable);
 
     test('should execute when called', () async {
       const Object param = Object();
