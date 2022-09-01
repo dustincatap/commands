@@ -1,9 +1,10 @@
 import 'package:meta/meta.dart';
 import 'package:simple_command/src/command.dart';
+import 'package:simple_command/src/relay_command.dart';
 import 'package:simple_command/src/utils.dart';
 
 /// A [Command] that executes synchronously and returns a value [TOut].
-abstract class TwoWayCommand<TIn, TOut> extends Command {
+abstract class TwoWayCommand<TIn, TOut> extends RelayCommand<TIn> {
   /// Initializes a new instance of [TwoWayCommand] that does not need any parameter when executing.
   ///
   /// Returns a value [TOut].
@@ -29,7 +30,7 @@ abstract class TwoWayCommand<TIn, TOut> extends Command {
 
   @protected
   @override
-  TOut? execute([TIn? parameter]);
+  TOut? execute([covariant TIn? parameter]);
 }
 
 class _TwoWayCommandImplWithoutParams<TIn, TOut> extends TwoWayCommand<TIn, TOut> {

@@ -4,7 +4,7 @@ import 'package:simple_command/src/relay_command.dart';
 import 'package:simple_command/src/utils.dart';
 
 /// A [Command] that executes asynchronously.
-abstract class AsyncRelayCommand<T> extends RelayCommand<T> {
+abstract class AsyncRelayCommand<TIn> extends RelayCommand<TIn> {
   /// Determines whether the asynchronous execution is finished or not.
   ValueNotifier<bool> isExecuting = ValueNotifier(false);
 
@@ -13,12 +13,11 @@ abstract class AsyncRelayCommand<T> extends RelayCommand<T> {
     return _AsyncRelayCommandImplWithoutParams(execute);
   }
 
-  /// Initializes a new instance of [AsyncRelayCommand] that needs a parameter [T] when executing.
-  static AsyncRelayCommand<T> withParam<T>(Future<void> Function(T) execute) {
-    return _AsyncRelayCommandImplWithParams<T>(execute);
+  /// Initializes a new instance of [AsyncRelayCommand] that needs a parameter [TIn] when executing.
+  static AsyncRelayCommand<TIn> withParam<TIn>(Future<void> Function(TIn) execute) {
+    return _AsyncRelayCommandImplWithParams<TIn>(execute);
   }
 
-  /// Executes this command.
   @override
   Future<void> call([Object? parameter]) async {
     if (canExecute.value) {
@@ -46,20 +45,20 @@ class _AsyncRelayCommandImplWithoutParams extends AsyncRelayCommand<void> {
   Future<void> execute([Object? parameter]) => _execute();
 }
 
-class _AsyncRelayCommandImplWithParams<T> extends AsyncRelayCommand<T> {
+class _AsyncRelayCommandImplWithParams<TIn> extends AsyncRelayCommand<TIn> {
   _AsyncRelayCommandImplWithParams(this._execute);
 
-  final Future<void> Function(T) _execute;
+  final Future<void> Function(TIn) _execute;
 
   @protected
   @override
-  Future<void> execute([covariant T? parameter]) async {
+  Future<void> execute([covariant TIn? parameter]) async {
     if (parameter != null) {
       await _execute(parameter);
-    } else if (_execute is Future<void> Function(T?)) {
-      await (_execute as Future<void> Function(T?)).call(null);
+    } else if (_execute is Future<void> Function(TIn?)) {
+      await (_execute as Future<void> Function(TIn?)).call(null);
     } else {
-      throw nullParamInNonNullableError<T>();
+      throw nullParamInNonNullableError<TIn>();
     }
   }
 }

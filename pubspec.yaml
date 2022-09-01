@@ -1,6 +1,6 @@
 name: simple_command
 description: A simple Flutter package for wrapping method executions in a Command object
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/dustincatap/commands
 repository: https://github.com/dustincatap/commands
 

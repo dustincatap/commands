@@ -41,17 +41,13 @@ class _AsyncTwoWayCommandImplWithoutParams<TOut> extends AsyncTwoWayCommand<void
   @protected
   @override
   Future<TOut?> execute([Object? parameter]) async {
-    if (canExecute.value) {
-      try {
-        isExecuting.value = true;
+    try {
+      isExecuting.value = true;
 
-        return _execute();
-      } finally {
-        isExecuting.value = false;
-      }
+      return _execute();
+    } finally {
+      isExecuting.value = false;
     }
-
-    return null;
   }
 }
 
